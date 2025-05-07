@@ -113,10 +113,8 @@ public:
         connect(server, &QTcpServer::newConnection, this, [this]() {
             serverSocket = server->nextPendingConnection();
 
-          //  connect(serverSocket, &QTcpSocket::readyRead, this, &Manager::receiveSignal);
-           // qDebug() << "Połączono sygnał readyRead dla klienta.";
-
-
+            //  connect(serverSocket, &QTcpSocket::readyRead, this, &Manager::receiveSignal);
+            // qDebug() << "Połączono sygnał readyRead dla klienta.";
 
             // Odbieranie sygnału sterującego od regulatora
             connect(serverSocket, &QTcpSocket::readyRead, this, [this]() {
@@ -126,13 +124,13 @@ public:
                 qDebug() << "Otrzymano sygnał sterujący: " << sygnalSterujacy;
 
                 // Oblicz wartość regulowaną (ARX)
-                double wartoscRegulowana = sprzezeniezwrotne.zwrocY(sygnalSterujacy);//sprzezeniezwrotne.SimUAR(sygnalSterujacy)[6];
+                double wartoscRegulowana = sprzezeniezwrotne.zwrocY(
+                    sygnalSterujacy); //sprzezeniezwrotne.SimUAR(sygnalSterujacy)[6];
 
                 // Wyślij wartość regulowaną do regulatora
                 serverSocket->write(QString::number(wartoscRegulowana).toUtf8());
                 qDebug() << "Wysłano wartość regulowaną: " << wartoscRegulowana;
                 dataReceived = true;
-
             });
 
             emit statusChanged("Połączono z regulatorem (klientem)!");
@@ -249,6 +247,7 @@ public slots:
                 wyniki[6] = wartoscRegulowana;
 
                 qDebug() << "Symuluj: Otrzymano wartość regulowaną: " << wartoscRegulowana;
+                dataReceived=true;
             } else {
                 qDebug() << "Symuluj: Brak odpowiedzi z serwera.";
             }
@@ -368,7 +367,7 @@ private:
     GenWartZadana gen_wart;
     QTimer *timer;     // Timer do taktowania
     bool dataReceived; // Flaga czy dane dotarły od obiektu
-    std::vector <double> wyniki = {0.0,0.0,0.0,0.0,0.0,0.0};
+    std::vector<double> wyniki = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
     void processResponseData()
     {

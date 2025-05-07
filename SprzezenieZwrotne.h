@@ -32,7 +32,8 @@ public:
                 wartRegulowana};
     }
 
-    std::vector<double> SimPIDOnline(double wartZadana){
+    std::vector<double> SimPIDOnline(double wartZadana)
+    {
         double uchyb = wartZadana - wartRegulowana;
         std::vector<double> sterowanie = pid.SumU(uchyb);
 
@@ -45,15 +46,14 @@ public:
                 wartRegulowana};
     }
 
-    double zwrocY(double sygnal){
+    double zwrocY(double sygnal)
+    {
         double wynik = model.SimY(sygnal);
         wartRegulowana = wynik;
         return wynik;
     }
 
-    void setRegulowana(double regulowana){
-        wartRegulowana = regulowana;
-    }
+    void setRegulowana(double regulowana) { wartRegulowana = regulowana; }
 
     void setPID(std::vector<double> &ParametryPID) { pid.setPID(ParametryPID); }
     void setTrybPID(const bool Tryb) { pid.setTryb(Tryb); }
